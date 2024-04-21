@@ -37,7 +37,6 @@ def external_penalty_function_method(
     current_step = 1
 
     while penalty(x, 1) >= epsilon:
-
         opt_steps = [np.array(x)]
         # Minimize F for current x and rho
 
@@ -59,7 +58,7 @@ def external_penalty_function_method(
                 f,
                 penalty,
                 rho,
-                np.hstack(opt_steps).flatten(),
+                np.vstack(opt_steps),
                 current_step,
         )
 
@@ -84,25 +83,56 @@ def external_penalty_function_method(
 
 
 if __name__ == '__main__':
-    inequality_constraints_list = [
-        lambda x: x-3 # x-3 <= 0
-    ]
+    # inequality_constraints_list = [
+    #     lambda x: x-3 # x-3 <= 0
+    # ]
 
-    equality_constraints_list = [ ]
+    # equality_constraints_list = [ ]
 
-    INIT_RHO = 1
-    INIT_X = 9
+    # INIT_RHO = 1
+    # INIT_X = 9
+    # EPS = 10e-8
+    # C = 2
+
+    # solution = external_penalty_function_method(
+    #     EPS,
+    #     C,
+    #     INIT_RHO,
+    #     INIT_X,
+    #     inequality_constraints_list,
+    #     equality_constraints_list,
+    #     f=lambda x: x**2 - 10*x,
+    # )
+
+    # print(solution)
+
     EPS = 10e-8
     C = 2
+    RHO_0 = 500
+    X0 = np.array([-300,-200])
+
+    F = lambda x: 2*x[0]**2 + 2*x[1]**2
+
+    INEQUALITY_CONSTRAINTS = [
+        lambda x: 1 - 2*x[0] - 2*x[1] # 1 - 2*x1 - 2*x2 <= 0
+        ]
+
+    EQUALITY_CONSTRAINTS = []
+
+    MAX_ITER = 10
+    MAX_OPT_ITER = 1000
+
 
     solution = external_penalty_function_method(
         EPS,
         C,
-        INIT_RHO,
-        INIT_X,
-        inequality_constraints_list,
-        equality_constraints_list,
-        f=lambda x: x**2 - 10*x,
+        RHO_0,
+        X0,
+        INEQUALITY_CONSTRAINTS,
+        EQUALITY_CONSTRAINTS,
+        F,
+        MAX_ITER,
+        MAX_OPT_ITER,
     )
 
     print(solution)
